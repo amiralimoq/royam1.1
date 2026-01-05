@@ -6,6 +6,32 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     if(sessionStorage.getItem('role') !== 'admin') window.location.href = 'login.html';
     
+    // --- SIDEBAR SCROLL LOGIC START ---
+    const sidebar = document.querySelector('.sidebar');
+    if (sidebar) {
+        // فعال‌سازی اسکرول برای سایدبار
+        sidebar.style.overflowY = 'auto';
+        
+        sidebar.addEventListener('wheel', (e) => {
+            const { scrollTop, scrollHeight, clientHeight } = sidebar;
+            const delta = e.deltaY;
+            const isScrollingDown = delta > 0;
+            const isScrollingUp = delta < 0;
+
+            // تشخیص رسیدن به بالا یا پایین سایدبار
+            const atBottom = Math.ceil(scrollTop + clientHeight) >= scrollHeight;
+            const atTop = scrollTop === 0;
+
+            // اگر در لبه‌ها هستیم و سعی داریم بیشتر اسکرول کنیم، جلوی اسکرول صفحه اصلی را بگیر
+            if ((isScrollingDown && atBottom) || (isScrollingUp && atTop)) {
+                e.preventDefault();
+            }
+            // جلوگیری از انتقال رویداد اسکرول به پرنت (Body)
+            e.stopPropagation();
+        }, { passive: false });
+    }
+    // --- SIDEBAR SCROLL LOGIC END ---
+
     const menuItems = document.querySelectorAll('.menu-item:not(.logout)');
     const sections = document.querySelectorAll('.content-section');
 
